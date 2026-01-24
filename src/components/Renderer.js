@@ -16,16 +16,29 @@ export function renderRelease(state, onDismiss) {
     <div class="game-scene">
       <div class="scene-background">
         <div class="release-notification">
-          <h2>RELEASE #${state.releaseNumber}!</h2>
-          <p>Code Quality -15%, Sanity +15%</p>
+          <div class="release-rocket">&#x1F680;</div>
+          <h2>DEPLOYING RELEASE #${state.releaseNumber}...</h2>
+          <div class="deploy-progress-bg">
+            <div class="deploy-progress-fill"></div>
+          </div>
+          <p class="deploy-status">Pushing to production...</p>
         </div>
       </div>
     </div>
   `;
 
   setTimeout(() => {
+    const status = document.querySelector('.deploy-status');
+    const title = document.querySelector('.release-notification h2');
+    if (status) status.textContent = 'Deploy successful!';
+    if (title) title.textContent = `RELEASE #${state.releaseNumber} LIVE!`;
+    const notification = document.querySelector('.release-notification');
+    if (notification) notification.classList.add('deploy-success');
+  }, 3000);
+
+  setTimeout(() => {
     onDismiss();
-  }, 2000);
+  }, 5500);
 }
 
 export function renderGameOver(state) {
@@ -117,15 +130,21 @@ function renderGameScene(scene) {
       </div>
     ` : '';
 
-    const showDialog = scene.animating !== 'enter' && scene.animating !== 'exit';
+    const showSpeechBubble = scene.animating !== 'enter' && scene.animating !== 'exit';
+    const showThought = scene.animating === 'enter' && scene.thoughtText;
 
     return `
       <div class="game-scene">
         <div class="scene-background">
+          ${showThought ? `
+            <div class="dialog-box thought-bubble">
+              <p class="dialog-text internal-thought">${scene.thoughtText}</p>
+            </div>
+          ` : ''}
           <div class="character ${animClass}">
             <img class="character-img" src="${scene.character.image}" alt="${scene.character.name}">
           </div>
-          ${showDialog ? `
+          ${showSpeechBubble ? `
             <div class="dialog-box">
               <p class="dialog-text">
                 <span class="character-name" style="color: ${scene.character.color}">${scene.character.name}:</span>

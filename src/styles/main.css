@@ -309,23 +309,79 @@ body {
 
 /* Release Notification */
 .release-notification {
-  background-color: #1c2a4a;
-  border: 2px solid #48c774;
+  background-color: rgba(20, 30, 50, 0.95);
+  border: 2px solid #f5a623;
   border-radius: 12px;
   padding: 30px 50px;
   text-align: center;
   animation: pop-in 0.3s ease-out;
+  width: 380px;
+}
+
+.release-notification.deploy-success {
+  border-color: #48c774;
+}
+
+.release-rocket {
+  font-size: 48px;
+  margin-bottom: 12px;
+  animation: rocket-pulse 1s ease-in-out infinite;
+}
+
+.deploy-success .release-rocket {
+  animation: none;
+}
+
+@keyframes rocket-pulse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .release-notification h2 {
-  color: #48c774;
-  font-size: 28px;
-  margin-bottom: 10px;
+  color: #f5a623;
+  font-size: 22px;
+  margin-bottom: 14px;
 }
 
-.release-notification p {
+.deploy-success h2 {
+  color: #48c774;
+}
+
+.deploy-progress-bg {
+  height: 14px;
+  background-color: #1a1a2e;
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.deploy-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #f5a623, #48c774);
+  border-radius: 3px;
+  animation: deploy-fill 3s ease-in-out forwards;
+}
+
+@keyframes deploy-fill {
+  0% { width: 0%; }
+  20% { width: 15%; }
+  40% { width: 35%; }
+  60% { width: 55%; }
+  80% { width: 78%; }
+  95% { width: 92%; }
+  100% { width: 100%; }
+}
+
+.deploy-status {
   color: #aaa;
-  font-size: 14px;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.deploy-success .deploy-status {
+  color: #48c774;
+  font-weight: bold;
 }
 
 @keyframes pop-in {

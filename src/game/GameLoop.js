@@ -4,23 +4,35 @@ import { EMPLOYEE_EVENTS } from '../data/employeeEvents.js';
 import { INTERNAL_DIALOGUES } from '../data/dialogues.js';
 import { render, renderRelease, renderGameOver, renderVictory } from '../components/Renderer.js';
 
-const PROGRESS_INTERVAL = 2000;
-const DIALOGUE_DURATION = 2500;
-const PAUSE_BETWEEN_TURNS = 1000;
+const PROGRESS_INTERVAL = 1500;
+const DIALOGUE_DURATION = 4000;
+const PAUSE_BETWEEN_TURNS = 500;
 const CHARACTER_ANIM_DURATION = 500;
 
 let state;
+let currentScene = null;
 let progressTimer = null;
+let turnTimer = null;
+let releaseInProgress = false;
 let usedDialogues = [];
 let usedEvents = { backend: [], frontend: [] };
 
 export function startGame() {
   state = createGameState();
+  currentScene = null;
+  releaseInProgress = false;
+  if (turnTimer) clearTimeout(turnTimer);
+  turnTimer = null;
   usedDialogues = [];
   usedEvents = { backend: [], frontend: [] };
-  render(state);
+  renderScene(null);
   startProgressTimer();
   nextTurn();
+}
+
+function renderScene(scene) {
+  currentScene = scene;
+  render(state, scene);
 }
 
 function startProgressTimer() {
@@ -32,7 +44,7 @@ function startProgressTimer() {
     }
     if (!state.waitingForDecision && state.morale > 30) {
       state.progress = Math.min(state.progress + 1, 100);
-      render(state);
+      render(state, currentScene);
 
       if (checkRelease(state)) {
         stopProgressTimer();
@@ -55,57 +67,57 @@ function handleRelease() {
     return;
   }
 
+  releaseInProgress = true;
+  if (turnTimer) clearTimeout(turnTimer);
+  turnTimer = null;
   state.waitingForDecision = true;
+
   renderRelease(state, () => {
+    releaseInProgress = false;
     state.waitingForDecision = false;
-    render(state);
+    renderScene(null);
     startProgressTimer();
-    setTimeout(() => nextTurn(), PAUSE_BETWEEN_TURNS);
+    turnTimer = setTimeout(() => nextTurn(), PAUSE_BETWEEN_TURNS);
   });
 }
 
 function nextTurn() {
-  if (state.gameOver || state.victory) return;
+  if (state.gameOver || state.victory || releaseInProgress) return;
 
-  showInternalDialogue(() => {
-    if (state.gameOver || state.victory) return;
-    spawnEmployee();
-  });
-}
-
-function showInternalDialogue(callback) {
   const dialogue = pickRandom(INTERNAL_DIALOGUES, usedDialogues);
-  render(state, { type: 'dialogue', text: dialogue });
+  renderScene({ type: 'dialogue', text: dialogue });
 
   setTimeout(() => {
-    callback();
+    if (state.gameOver || state.victory || releaseInProgress) return;
+    spawnEmployee(dialogue);
   }, DIALOGUE_DURATION);
 }
 
-function spawnEmployee() {
+function spawnEmployee(thoughtText) {
   const characterType = Math.random() < 0.5 ? 'backend' : 'frontend';
   const character = CHARACTERS[characterType];
-  const event = pickRandomEvent(characterType);
+  let event = pickRandomEvent(characterType);
 
   if (!event) {
     usedEvents[characterType] = [];
-    spawnEmployee();
-    return;
+    event = pickRandomEvent(characterType);
   }
 
   const enterDirection = Math.random() < 0.5 ? 'left' : 'right';
   state.waitingForDecision = true;
 
-  render(state, {
+  renderScene({
     type: 'employee',
     character,
     event,
     animating: 'enter',
     enterDirection,
+    thoughtText,
   });
 
   setTimeout(() => {
-    render(state, {
+    if (state.gameOver || state.victory || releaseInProgress) return;
+    renderScene({
       type: 'employee',
       character,
       event,
@@ -121,7 +133,7 @@ function handleChoice(character, event, optionIndex) {
   applyEffects(state, option.effects);
   state.waitingForDecision = false;
 
-  render(state, {
+  renderScene({
     type: 'employee',
     character,
     event,
@@ -134,10 +146,11 @@ function handleChoice(character, event, optionIndex) {
       renderGameOver(state);
       return;
     }
+    if (releaseInProgress) return;
 
-    render(state);
+    renderScene(null);
 
-    setTimeout(() => {
+    turnTimer = setTimeout(() => {
       nextTurn();
     }, PAUSE_BETWEEN_TURNS);
   }, CHARACTER_ANIM_DURATION);
