@@ -1,4 +1,4 @@
-import { startGame } from '../game/GameLoop.js';
+import { DEPLOY_ANIMATION_DURATION, RELEASE_TOTAL_DURATION } from '../game/Release.js';
 
 const app = document.getElementById('app');
 
@@ -34,14 +34,14 @@ export function renderRelease(state, onDismiss) {
     if (title) title.textContent = `RELEASE #${state.releaseNumber} LIVE!`;
     const notification = document.querySelector('.release-notification');
     if (notification) notification.classList.add('deploy-success');
-  }, 3000);
+  }, DEPLOY_ANIMATION_DURATION);
 
   setTimeout(() => {
     onDismiss();
-  }, 5500);
+  }, RELEASE_TOTAL_DURATION);
 }
 
-export function renderGameOver(state) {
+export function renderGameOver(state, onRestart) {
   app.innerHTML = `
     <div class="end-screen game-over-screen">
       <h1 class="game-over-title">GAME OVER</h1>
@@ -53,10 +53,10 @@ export function renderGameOver(state) {
       <button class="restart-btn" id="restart-btn">Restart</button>
     </div>
   `;
-  document.getElementById('restart-btn').addEventListener('click', startGame);
+  document.getElementById('restart-btn').addEventListener('click', onRestart);
 }
 
-export function renderVictory(state) {
+export function renderVictory(state, onRestart) {
   app.innerHTML = `
     <div class="end-screen victory-screen">
       <h1 class="victory-title">GRATULACJE!</h1>
@@ -69,7 +69,7 @@ export function renderVictory(state) {
       <button class="restart-btn" id="restart-btn">Zagraj ponownie</button>
     </div>
   `;
-  document.getElementById('restart-btn').addEventListener('click', startGame);
+  document.getElementById('restart-btn').addEventListener('click', onRestart);
 }
 
 function renderStatsBar(state) {
