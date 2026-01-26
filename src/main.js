@@ -1,4 +1,4 @@
 import './styles/main.css';
-import { startGame } from './game/GameLoop.js';
+import { showTitleScreen } from './game/GameLoop.js';
 
-startGame();
+showTitleScreen();

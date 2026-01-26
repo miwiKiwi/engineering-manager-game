@@ -1,8 +1,8 @@
 import { createGameState, applyEffects } from './GameState.js';
-import { CHARACTERS } from '../data/characters.js';
+import { CHARACTERS, CHARACTER_TYPES } from '../data/characters.js';
 import { EMPLOYEE_EVENTS } from '../data/employeeEvents.js';
 import { INTERNAL_DIALOGUES } from '../data/dialogues.js';
-import { render, renderRelease, renderGameOver, renderVictory } from '../components/Renderer.js';
+import { render, renderRelease, renderGameOver, renderVictory, renderTitleScreen, renderIntroScreen } from '../components/Renderer.js';
 import * as Timer from './Timer.js';
 import { Phase } from './phases.js';
 import { checkAndApplyRelease } from './Release.js';
@@ -14,9 +14,27 @@ const CHARACTER_ANIM_DURATION = 500;
 
 let state;
 let currentScene = null;
-let phase = Phase.IDLE;
+let phase = Phase.TITLE;
 let usedDialogues = [];
-let usedEvents = { backend: [], frontend: [] };
+let usedEvents = {};
+
+function initUsedEvents() {
+  usedEvents = {};
+  CHARACTER_TYPES.forEach((type) => {
+    usedEvents[type] = [];
+  });
+}
+
+export function showTitleScreen() {
+  Timer.clearAll();
+  phase = Phase.TITLE;
+  renderTitleScreen(showIntroScreen);
+}
+
+function showIntroScreen() {
+  phase = Phase.INTRO;
+  renderIntroScreen(startGame);
+}
 
 export function startGame() {
   Timer.clearAll();
@@ -24,7 +42,7 @@ export function startGame() {
   currentScene = null;
   phase = Phase.IDLE;
   usedDialogues = [];
-  usedEvents = { backend: [], frontend: [] };
+  initUsedEvents();
   renderScene(null);
   startProgressTimer();
   nextTurn();
@@ -83,8 +101,12 @@ function nextTurn() {
 }
 
 function spawnEmployee(thoughtText) {
-  const characterType = Math.random() < 0.5 ? 'backend' : 'frontend';
-  const character = CHARACTERS[characterType];
+  const characterType = CHARACTER_TYPES[Math.floor(Math.random() * CHARACTER_TYPES.length)];
+  const characterBase = CHARACTERS[characterType];
+  const character = {
+    ...characterBase,
+    image: characterBase.images[Math.floor(Math.random() * characterBase.images.length)],
+  };
   let event = pickRandomEvent(characterType);
 
   if (!event) {

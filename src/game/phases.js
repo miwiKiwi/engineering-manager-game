@@ -1,4 +1,6 @@
 export const Phase = {
+  TITLE: 'TITLE',
+  INTRO: 'INTRO',
   IDLE: 'IDLE',
   THOUGHT: 'THOUGHT',
   EMPLOYEE_ENTER: 'EMPLOYEE_ENTER',

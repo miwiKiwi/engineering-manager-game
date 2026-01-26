@@ -4,7 +4,7 @@ export const DEPLOY_ANIMATION_DURATION = 3000;
 export const RELEASE_TOTAL_DURATION = 5500;
 
 const MILESTONES = [25, 50, 75, 100];
-const RELEASES_TO_WIN = 4;
+const RELEASES_TO_WIN = 3;
 
 export function checkAndApplyRelease(state) {
   const nextMilestone = MILESTONES[state.releaseNumber];

@@ -41,13 +41,47 @@ export function renderRelease(state, onDismiss) {
   }, RELEASE_TOTAL_DURATION);
 }
 
+export function renderTitleScreen(onStart) {
+  app.innerHTML = `
+    <div class="title-screen">
+      <div class="title-background"></div>
+      <div class="title-content">
+        <h1 class="game-title">Engineering Manager Simulator</h1>
+        <p class="game-subtitle">Dowieź projekt do produkcji. Nie zwariuj.</p>
+        <button class="start-btn" id="start-btn">Start</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('start-btn').addEventListener('click', onStart);
+}
+
+export function renderIntroScreen(onContinue) {
+  app.innerHTML = `
+    <div class="intro-screen">
+      <div class="intro-content">
+        <h2>Twoja misja</h2>
+        <p>Jesteś Engineering Managerem w firmie technologicznej. Twój zespół pracuje nad nowym serwisem, który musi trafić na produkcję.</p>
+        <p>Pracownicy będą przychodzić z problemami. Każda decyzja wpływa na:</p>
+        <ul>
+          <li><strong>Sanity</strong> — Twoje zdrowie psychiczne</li>
+          <li><strong>Morale</strong> — zadowolenie zespołu</li>
+          <li><strong>Code Quality</strong> — jakość kodu</li>
+        </ul>
+        <p>Dowieź <strong>3 release'y</strong> zanim stracisz rozum lub cały zespół odejdzie.</p>
+        <button class="start-btn" id="continue-btn">Zaczynamy!</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('continue-btn').addEventListener('click', onContinue);
+}
+
 export function renderGameOver(state, onRestart) {
   app.innerHTML = `
     <div class="end-screen game-over-screen">
       <h1 class="game-over-title">GAME OVER</h1>
       <p class="game-over-reason">${state.gameOverReason}</p>
       <div class="end-stats">
-        <p>Release: ${state.releaseNumber}/4</p>
+        <p>Release: ${state.releaseNumber}/3</p>
         <p>Progress: ${state.progress}%</p>
       </div>
       <button class="restart-btn" id="restart-btn">Restart</button>
@@ -78,7 +112,7 @@ function renderStatsBar(state) {
       ${renderStat('Sanity', state.sanity, 'stat-sanity')}
       ${renderStat('Morale', state.morale, 'stat-morale')}
       ${renderStat('Code Quality', state.codeQuality, 'stat-code')}
-      ${renderStat(`Progress (Release ${state.releaseNumber}/4)`, state.progress, 'stat-progress')}
+      ${renderStat(`Progress (Release ${state.releaseNumber}/3)`, state.progress, 'stat-progress')}
     </div>
   `;
 }
