@@ -629,3 +629,148 @@ body {
 .intro-content strong {
   color: #fff;
 }
+
+/* Mystery Layer - Victory Screen Glitch */
+.victory-screen.glitching {
+  animation: screen-glitch 0.6s steps(1) infinite, bg-glitch 0.8s steps(1) infinite;
+  position: relative;
+}
+
+.victory-screen.glitching::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 255, 0.03) 0px,
+    rgba(0, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  animation: scanlines 0.5s steps(1) infinite;
+  z-index: 10;
+}
+
+.victory-screen.glitching::after {
+  content: '⚠ REALITY_ERR_0x777: OBSERVER_DETECTED';
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #ff3333;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+  opacity: 0;
+  animation: error-flash 1.2s ease-in-out forwards;
+  z-index: 11;
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #ff3333;
+  padding: 12px 24px;
+  box-shadow: 0 0 20px rgba(255, 50, 50, 0.5), inset 0 0 10px rgba(255, 0, 0, 0.1);
+}
+
+.victory-screen.glitching .victory-title,
+.victory-screen.glitching .victory-message {
+  text-shadow:
+    -8px 0 rgba(255, 0, 0, 1),
+    8px 0 rgba(0, 255, 255, 1),
+    0 0 15px rgba(255, 255, 255, 0.4);
+  animation: text-glitch 0.5s steps(1) infinite;
+}
+
+.victory-screen.glitching .victory-title {
+  text-shadow:
+    -15px 0 rgba(255, 0, 0, 1),
+    15px 0 rgba(0, 255, 255, 1),
+    -15px 3px rgba(255, 0, 255, 0.5),
+    0 0 30px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes screen-glitch {
+  0%, 30% {
+    filter: none;
+    transform: translate(0) skew(0) scale(1);
+  }
+  31%, 100% {
+    filter: hue-rotate(150deg) saturate(5) brightness(1.5) contrast(1.4);
+    transform: translate(-12px, 8px) skew(-5deg) scale(1.02);
+  }
+}
+
+@keyframes bg-glitch {
+  0%, 30% { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+  31%, 100% { background: #000000; }
+}
+
+@keyframes text-glitch {
+  0%, 30% { transform: translate(0) skew(0) scale(1); letter-spacing: normal; }
+  31%, 100% { transform: translate(-10px, 5px) skew(-4deg) scale(1.05); letter-spacing: 12px; }
+}
+
+@keyframes scanlines {
+  0%, 30% { opacity: 0.1; }
+  31%, 100% { opacity: 0.8; }
+}
+
+@keyframes error-flash {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.9); }
+  8% { opacity: 1; transform: translateX(-50%) scale(1); }
+  42% { opacity: 1; transform: translateX(-50%) scale(1); }
+  44% { opacity: 0; transform: translateX(-50%) scale(1); }
+  46% { opacity: 1; transform: translateX(-50%) scale(1); }
+  80% { opacity: 1; transform: translateX(-50%) scale(1); }
+  88% { opacity: 0; transform: translateX(-50%) scale(0.95); }
+  100% { opacity: 0; transform: translateX(-50%) scale(0.9); }
+}
+
+/* Mystery Layer - Hidden Symbol */
+.hidden-symbol {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 24px;
+  color: #00adb5;
+  opacity: 0;
+  cursor: pointer;
+  user-select: none;
+  z-index: 100;
+  text-shadow: 0 0 10px rgba(0, 173, 181, 0.6);
+  animation: symbol-fade-in 0.5s ease-out 0.3s forwards;
+}
+
+.hidden-symbol:hover {
+  opacity: 0.6 !important;
+  text-shadow: 0 0 20px rgba(0, 173, 181, 0.8);
+}
+
+@keyframes symbol-fade-in {
+  from { opacity: 0; }
+  to { opacity: 0.3; }
+}
+
+@keyframes symbol-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    text-shadow: 0 0 10px rgba(0, 173, 181, 0.6);
+  }
+  50% {
+    opacity: 0.5;
+    text-shadow: 0 0 20px rgba(0, 173, 181, 0.8);
+  }
+}
+
+.hidden-symbol.pulsing {
+  animation: symbol-fade-in 0.5s ease-out forwards, symbol-pulse 2s ease-in-out 0.5s infinite;
+}
+
+/* Mystery Layer - Final Reveal Overlay */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

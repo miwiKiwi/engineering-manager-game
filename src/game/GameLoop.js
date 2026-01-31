@@ -10,6 +10,27 @@ import { randomEventManager } from './RandomEventManager.js';
 import { TIMINGS, THRESHOLDS } from './constants.js';
 
 let state;
+
+// DEBUG: Temporary debug functions to test mystery layer
+window.debug777 = () => {
+  if (state && state.fragments) {
+    state.fragments.fragment1 = true;
+    state.fragments.fragment2 = true;
+    console.log('Fragments 1 & 2 activated. Win the game to see the glitch!');
+  } else {
+    console.log('Start a game first.');
+  }
+};
+
+window.debugWin = () => {
+  if (state) {
+    state.releaseNumber = 2;
+    state.progress = 99;
+    console.log('Almost there... progress will hit 100 soon.');
+  } else {
+    console.log('Start a game first.');
+  }
+};
 let currentScene = null;
 let phase = Phase.TITLE;
 let usedDialogues = [];
@@ -35,6 +56,7 @@ function showIntroScreen() {
 
 export function startGame() {
   Timer.clearAll();
+  cleanupMysteryLayer();
   state = createGameState();
   currentScene = null;
   phase = Phase.IDLE;
@@ -44,6 +66,16 @@ export function startGame() {
   renderScene(null);
   startProgressTimer();
   nextTurn();
+}
+
+function cleanupMysteryLayer() {
+  // Remove hidden symbol if present
+  const symbol = document.querySelector('.hidden-symbol');
+  if (symbol) symbol.remove();
+
+  // Remove final reveal overlay if present
+  const overlays = document.querySelectorAll('[style*="position: fixed"][style*="z-index: 1000"]');
+  overlays.forEach((el) => el.remove());
 }
 
 function renderScene(scene) {

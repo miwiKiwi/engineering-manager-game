@@ -106,6 +106,163 @@ export function renderVictory(state, onRestart) {
     </div>
   `;
   document.getElementById('restart-btn').addEventListener('click', onRestart);
+
+  // Mystery layer: glitch + hidden symbol for Path C players
+  if (state.fragments && state.fragments.fragment1 && state.fragments.fragment2) {
+    Timer.delay(() => {
+      const victoryScreen = document.querySelector('.victory-screen');
+      if (victoryScreen) {
+        victoryScreen.classList.add('glitching');
+        startTextScramble(victoryScreen);
+
+        Timer.delay(() => {
+          victoryScreen.classList.remove('glitching');
+          stopTextScramble(victoryScreen);
+          showHiddenSymbol(state);
+        }, 1400); // glitch duration - 7 flips at 200ms
+      }
+    }, 1500); // delay before glitch
+  }
+}
+
+const GLITCH_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+let scrambleInterval = null;
+let originalTexts = new Map();
+let scrambledTexts = new Map();
+let showGlitched = false;
+
+function startTextScramble(container) {
+  const textElements = container.querySelectorAll('h1, p, button');
+
+  // Store original texts and generate ONE scrambled version
+  textElements.forEach((el) => {
+    originalTexts.set(el, el.textContent);
+    scrambledTexts.set(el, scrambleText(el.textContent, 0.5));
+  });
+
+  // Flip between normal and glitched state
+  scrambleInterval = setInterval(() => {
+    showGlitched = !showGlitched;
+    textElements.forEach((el) => {
+      el.textContent = showGlitched ? scrambledTexts.get(el) : originalTexts.get(el);
+    });
+  }, 200);
+}
+
+function stopTextScramble(container) {
+  if (scrambleInterval) {
+    clearInterval(scrambleInterval);
+    scrambleInterval = null;
+  }
+
+  // Restore original texts
+  originalTexts.forEach((text, el) => {
+    el.textContent = text;
+  });
+  originalTexts.clear();
+  scrambledTexts.clear();
+  showGlitched = false;
+}
+
+function scrambleText(text, intensity) {
+  return text.split('').map((char) => {
+    if (char === ' ') return ' ';
+    if (Math.random() < intensity) {
+      return GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+    }
+    return char;
+  }).join('');
+}
+
+function showHiddenSymbol(state) {
+  const symbol = document.createElement('div');
+  symbol.className = 'hidden-symbol pulsing';
+  symbol.textContent = '\u2318'; // ⌘ symbol
+  symbol.title = '';
+
+  symbol.addEventListener('click', () => {
+    showPassphrasePrompt(state);
+  });
+
+  document.body.appendChild(symbol);
+}
+
+function showPassphrasePrompt(state) {
+  const passphrase = prompt('Enter passphrase:');
+  if (!passphrase) return;
+
+  const normalized = passphrase.toLowerCase().replace(/[^a-z]/g, '');
+
+  if (normalized === 'itsafeature') {
+    state.fragments.fragment3 = true;
+    showFinalReveal();
+  } else {
+    console.log('Incorrect passphrase. Keep looking.');
+  }
+}
+
+function showFinalReveal() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease-out;
+  `;
+
+  overlay.innerHTML = `
+    <div style="
+      max-width: 500px;
+      padding: 40px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      color: #00adb5;
+    ">
+      <h2 style="font-size: 24px; margin-bottom: 20px; color: #45e0e8;">
+        Fragment 3/3: ADAPTATION
+      </h2>
+      <p style="font-size: 14px; line-height: 1.8; color: #ccc; margin-bottom: 20px;">
+        The complete philosophy:<br><br>
+        1. PATTERNS exist in chaos<br>
+        2. FOCUS reveals those patterns<br>
+        3. ADAPTATION - while fixing, we shape.<br>
+        We can't build utopia, but we can leave things<br>
+        a little better than we found them.
+      </p>
+      <p style="font-size: 13px; color: #888; margin-bottom: 30px;">
+        Reality needs maintenance.<br>
+        Not everyone notices. But anyone could.<br>
+        There are fewer of us every year.
+      </p>
+      <p style="font-size: 18px; color: #00adb5; margin-bottom: 30px;">
+        Welcome to The Maintainers Collective.
+      </p>
+      <a href="https://maintainers-collective.org/welcome" target="_blank"
+         style="color: #45e0e8; text-decoration: underline; font-size: 12px;">
+        → Continue to Level 2
+      </a>
+      <br><br>
+      <button id="close-reveal" style="
+        margin-top: 20px;
+        padding: 10px 30px;
+        background: transparent;
+        border: 1px solid #00adb5;
+        color: #00adb5;
+        font-family: 'Courier New', monospace;
+        cursor: pointer;
+      ">Close</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  document.getElementById('close-reveal').addEventListener('click', () => {
+    overlay.remove();
+  });
 }
 
 function renderStatsBar(state) {
