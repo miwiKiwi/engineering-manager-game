@@ -2,7 +2,7 @@ import { createGameState, applyEffects } from './GameState.js';
 import { CHARACTERS, CHARACTER_TYPES } from '../data/characters.js';
 import { EMPLOYEE_EVENTS } from '../data/employeeEvents.js';
 import { INTERNAL_DIALOGUES } from '../data/dialogues.js';
-import { render, renderRelease, renderGameOver, renderVictory, renderTitleScreen, renderIntroScreen } from '../components/Renderer.js';
+import { render, renderRelease, renderGameOver, renderVictory, renderTitleScreen, renderIntroScreen, resetMysteryLayerBinding } from '../components/Renderer.js';
 import * as Timer from './Timer.js';
 import { Phase } from './phases.js';
 import { checkAndApplyRelease } from './Release.js';
@@ -31,9 +31,40 @@ window.debugWin = () => {
     console.log('Start a game first.');
   }
 };
+
+// Mystery layer: ATLAS command
+window.ATLAS = () => {
+  if (!state) {
+    console.log('...');
+    return;
+  }
+  if (state.fragments.fragment1) {
+    console.log('You already know the way.');
+    return;
+  }
+  state.fragments.fragment1 = true;
+  console.log(`
+%c╔════════════════════════════════════════════════════════════╗
+║                                                            ║
+║   WELCOME, OBSERVER                                        ║
+║                                                            ║
+║   You found the first key.                                 ║
+║                                                            ║
+║   Fragment 1/3: PATTERNS                                   ║
+║                                                            ║
+║   "Patterns exist in chaos.                                ║
+║    Most people are too distracted to see them.             ║
+║    You noticed. That's all it takes."                      ║
+║                                                            ║
+║   → maintainers-collective.org/docs                        ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+`, 'color: #00adb5; font-family: monospace;');
+};
+
 let currentScene = null;
 let phase = Phase.TITLE;
-let usedDialogues = [];
+let dialogueIndex = 0;
 let usedEvents = {};
 
 function initUsedEvents() {
@@ -60,7 +91,7 @@ export function startGame() {
   state = createGameState();
   currentScene = null;
   phase = Phase.IDLE;
-  usedDialogues = [];
+  dialogueIndex = 0;
   initUsedEvents();
   randomEventManager.reset();
   renderScene(null);
@@ -76,6 +107,9 @@ function cleanupMysteryLayer() {
   // Remove final reveal overlay if present
   const overlays = document.querySelectorAll('[style*="position: fixed"][style*="z-index: 1000"]');
   overlays.forEach((el) => el.remove());
+
+  // Reset mystery layer event binding
+  resetMysteryLayerBinding();
 }
 
 function renderScene(scene) {
@@ -122,7 +156,8 @@ function nextTurn() {
   if (phase !== Phase.IDLE) return;
 
   phase = Phase.THOUGHT;
-  const dialogue = pickRandom(INTERNAL_DIALOGUES, usedDialogues);
+  const dialogue = INTERNAL_DIALOGUES[dialogueIndex % INTERNAL_DIALOGUES.length];
+  dialogueIndex++;
   renderScene({ type: 'dialogue', text: dialogue });
 
   Timer.delay(() => {
@@ -229,16 +264,6 @@ function handleRandomChoice(event, optionIndex) {
   phase = Phase.IDLE;
   renderScene(null);
   Timer.delay(() => nextTurn(), TIMINGS.PAUSE_BETWEEN_TURNS);
-}
-
-function pickRandom(pool, usedPool) {
-  if (usedPool.length >= pool.length) {
-    usedPool.length = 0;
-  }
-  const available = pool.filter((item) => !usedPool.includes(item));
-  const picked = available[Math.floor(Math.random() * available.length)];
-  usedPool.push(picked);
-  return picked;
 }
 
 function pickRandomEvent(characterType) {

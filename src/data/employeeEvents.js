@@ -45,6 +45,16 @@ export const EMPLOYEE_EVENTS = {
         { text: 'Przekonajmy PO że to feature', effects: { sanity: -10, morale: 10, codeQuality: -15 } },
       ],
     },
+    {
+      id: 'be6',
+      glitch: true,
+      text: '"Znalazłem dziwny plik w repo: observer_notes.md. W środku tylko: ATLAS - Access code for the aware. Co to znaczy?"',
+      options: [
+        { text: 'Pewnie easter egg, ignorujemy', effects: { sanity: 0, morale: 0, codeQuality: 0 } },
+        { text: 'Sprawdzę to później w konsoli...', effects: { sanity: 5, morale: 5, codeQuality: 0 } },
+        { text: 'Usuń to, nie potrzebujemy tajemnic', effects: { sanity: -5, morale: 0, codeQuality: 5 } },
+      ],
+    },
   ],
   frontend: [
     {
@@ -92,6 +102,16 @@ export const EMPLOYEE_EVENTS = {
         { text: 'Okej, załatwiam 30%', effects: { sanity: -12, morale: 20, codeQuality: 0 } },
       ],
     },
+    {
+      id: 'fe6',
+      glitch: true,
+      text: '"Znalazłem w konsoli dziwny stack trace: reality.core.manager.awareness_test.run(). Nie mamy takiego modułu w kodzie. Co to jest?"',
+      options: [
+        { text: 'Pewnie z jakiejś biblioteki', effects: { sanity: 0, morale: 0, codeQuality: 0 } },
+        { text: 'Pokaż mi to...', effects: { sanity: -5, morale: 5, codeQuality: 0 } },
+        { text: 'Awareness test? Ciekawe...', effects: { sanity: 5, morale: 5, codeQuality: 0 } },
+      ],
+    },
   ],
   devops: [
     {
@@ -137,6 +157,16 @@ export const EMPLOYEE_EVENTS = {
         { text: 'Cleanup policy + kasujemy stare', effects: { sanity: -6, morale: -5, codeQuality: 10 } },
         { text: 'Kupujemy więcej storage', effects: { sanity: -2, morale: 5, codeQuality: -5 } },
         { text: 'Migrujemy na ECR', effects: { sanity: -10, morale: -10, codeQuality: 5 } },
+      ],
+    },
+    {
+      id: 'do6',
+      glitch: true,
+      text: '"Logi pokazują dziwne requesty. Ktoś odpytuje endpoint /api/observer co 77.7 sekundy. Ale ten endpoint nie istnieje..."',
+      options: [
+        { text: 'Blokujemy IP', effects: { sanity: -3, morale: 0, codeQuality: 5 } },
+        { text: 'Interesujące... zbadajmy to', effects: { sanity: 5, morale: 5, codeQuality: 0 } },
+        { text: 'Ignorujemy, pewnie bot', effects: { sanity: 0, morale: 0, codeQuality: 0 } },
       ],
     },
   ],
@@ -231,6 +261,16 @@ export const EMPLOYEE_EVENTS = {
         { text: 'Mentoring i pozytywny feedback', effects: { sanity: -5, morale: 20, codeQuality: 0 } },
         { text: 'To normalne, przejdzie', effects: { sanity: -2, morale: 5, codeQuality: 0 } },
         { text: 'Twarda szkoła - musisz dowieźć', effects: { sanity: -3, morale: -15, codeQuality: 5 } },
+      ],
+    },
+    {
+      id: 'jr6',
+      glitch: true,
+      text: '"Spędziłem 3 godziny scrollując TikToka zamiast debugować. A potem ten bug się sam naprawił. Jakby system czekał aż przestanę się rozpraszać. Dziwne, nie?"',
+      options: [
+        { text: 'Coincidence. Wracaj do pracy.', effects: { sanity: 0, morale: -5, codeQuality: 0 } },
+        { text: 'Hmm... ciekawe. Opowiedz więcej.', effects: { sanity: -3, morale: 5, codeQuality: 0 } },
+        { text: 'Może coś w tym jest...', effects: { sanity: 5, morale: 5, codeQuality: 0 } },
       ],
     },
   ],

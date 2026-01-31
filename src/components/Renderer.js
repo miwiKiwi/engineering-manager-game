@@ -10,6 +10,7 @@ export function render(state, scene = null) {
     ${renderGameScene(scene)}
   `;
   bindSceneEvents(scene);
+  bindMysteryLayerEvents(state);
 }
 
 export function renderRelease(state, onDismiss) {
@@ -69,6 +70,7 @@ export function renderIntroScreen(onContinue) {
           <li><strong>Morale</strong> — zadowolenie zespołu</li>
           <li><strong>Code Quality</strong> — jakość kodu</li>
         </ul>
+        <p>Jeśli <strong>Morale spadnie poniżej 30%</strong>, zespół przestaje pracować.</p>
         <p>Dowieź <strong>3 release'y</strong> zanim stracisz rozum lub cały zespół odejdzie.</p>
         <button class="start-btn" id="continue-btn">Zaczynamy!</button>
       </div>
@@ -188,16 +190,16 @@ function showHiddenSymbol(state) {
 }
 
 function showPassphrasePrompt(state) {
-  const passphrase = prompt('Enter passphrase:');
-  if (!passphrase) return;
+  const motto = prompt('Enter the motto:');
+  if (!motto) return;
 
-  const normalized = passphrase.toLowerCase().replace(/[^a-z]/g, '');
+  const normalized = motto.toLowerCase().replace(/[^a-z]/g, '');
 
   if (normalized === 'itsafeature') {
     state.fragments.fragment3 = true;
     showFinalReveal();
   } else {
-    console.log('Incorrect passphrase. Keep looking.');
+    console.log('That\'s not the motto. Keep looking.');
   }
 }
 
@@ -394,4 +396,88 @@ function bindSceneEvents(scene) {
       });
     });
   }
+}
+
+// Mystery layer: 77.7% progress bar click
+let mysteryLayerBound = false;
+
+function bindMysteryLayerEvents(state) {
+  if (!state || !state.fragments) return;
+  if (state.fragments.fragment2) return; // Already found
+  if (mysteryLayerBound) return; // Already bound
+
+  const progressBar = document.querySelector('.stat-progress');
+  if (!progressBar) return;
+
+  mysteryLayerBound = true;
+  progressBar.style.cursor = 'pointer';
+  progressBar.addEventListener('click', () => {
+    // Check if progress is around 77.7% (tolerance: 77.0% - 78.4%)
+    if (state.progress >= 77 && state.progress <= 78.4 && !state.fragments.fragment2) {
+      state.fragments.fragment2 = true;
+      showFragment2Message();
+    }
+  });
+}
+
+export function resetMysteryLayerBinding() {
+  mysteryLayerBound = false;
+}
+
+function showFragment2Message() {
+  const overlay = document.createElement('div');
+  overlay.className = 'fragment-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+  `;
+
+  overlay.innerHTML = `
+    <div style="
+      max-width: 500px;
+      padding: 40px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      color: #00adb5;
+      border: 1px solid #00adb5;
+      background: rgba(0, 20, 30, 0.9);
+    ">
+      <h2 style="font-size: 20px; margin-bottom: 20px; color: #45e0e8;">
+        Fragment 2/3: FOCUS
+      </h2>
+      <p style="font-size: 14px; line-height: 1.8; color: #ccc; margin-bottom: 20px;">
+        "Reality rewards attention.<br>
+        Patterns hide in plain sight.<br>
+        The distracted miss everything."
+      </p>
+      <p style="font-size: 12px; color: #888; margin-bottom: 20px;">
+        You clicked at exactly the right moment.<br>
+        Most would scroll past without noticing.
+      </p>
+      <p style="font-size: 11px; color: #555;">
+        At victory, look for what doesn't belong.
+      </p>
+      <button id="close-fragment2" style="
+        margin-top: 20px;
+        padding: 10px 30px;
+        background: transparent;
+        border: 1px solid #00adb5;
+        color: #00adb5;
+        font-family: 'Courier New', monospace;
+        cursor: pointer;
+      ">Continue</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  document.getElementById('close-fragment2').addEventListener('click', () => {
+    overlay.remove();
+  });
 }
