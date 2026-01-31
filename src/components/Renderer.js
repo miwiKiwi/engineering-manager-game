@@ -10,6 +10,7 @@ export function render(state, scene = null) {
     ${renderGameScene(scene)}
   `;
   bindSceneEvents(scene);
+  mysteryLayerBound = false; // Reset - DOM was replaced
   bindMysteryLayerEvents(state);
 }
 
@@ -195,7 +196,8 @@ function showPassphrasePrompt(state) {
 
   const normalized = motto.toLowerCase().replace(/[^a-z]/g, '');
 
-  if (normalized === 'itsafeature') {
+  // Accept variations: "it's a feature", "it's not a bug, it's a feature", etc.
+  if (normalized.endsWith('itsafeature')) {
     state.fragments.fragment3 = true;
     showFinalReveal();
   } else {
@@ -225,27 +227,26 @@ function showFinalReveal() {
       color: #00adb5;
     ">
       <h2 style="font-size: 24px; margin-bottom: 20px; color: #45e0e8;">
-        Fragment 3/3: ADAPTATION
+        ADAPTATION
       </h2>
+      <br>
       <p style="font-size: 14px; line-height: 1.8; color: #ccc; margin-bottom: 20px;">
-        The complete philosophy:<br><br>
         1. PATTERNS exist in chaos<br>
         2. FOCUS reveals those patterns<br>
-        3. ADAPTATION - while fixing, we shape.<br>
+        3. ADAPTATION - while fixing, we shape.<br><br>
         We can't build utopia, but we can leave things<br>
         a little better than we found them.
       </p>
       <p style="font-size: 13px; color: #888; margin-bottom: 30px;">
         Reality needs maintenance.<br>
-        Not everyone notices. But anyone could.<br>
-        There are fewer of us every year.
+        Not everyone notices. But anyone could.
       </p>
       <p style="font-size: 18px; color: #00adb5; margin-bottom: 30px;">
-        Welcome to The Maintainers Collective.
+        Congratulations
       </p>
       <a href="https://maintainers-collective.org/welcome" target="_blank"
          style="color: #45e0e8; text-decoration: underline; font-size: 12px;">
-        → Continue to Level 2
+        → Welcome
       </a>
       <br><br>
       <button id="close-reveal" style="
@@ -268,12 +269,15 @@ function showFinalReveal() {
 }
 
 function renderStatsBar(state) {
+  const progressInRange = state.progress >= THRESHOLDS.FRAGMENT2_PROGRESS_MIN && state.progress <= THRESHOLDS.FRAGMENT2_PROGRESS_MAX && !state.fragments.fragment2;
+  const progressClass = progressInRange ? 'stat-progress mystery-active' : 'stat-progress';
+
   return `
     <div class="stats-bar">
       ${renderStat('Sanity', state.sanity, 'stat-sanity')}
       ${renderStat('Morale', state.morale, 'stat-morale')}
       ${renderStat('Code Quality', state.codeQuality, 'stat-code')}
-      ${renderStat(`Progress (Release ${state.releaseNumber}/3)`, state.progress, 'stat-progress')}
+      ${renderProgressStat(`Progress (Release ${state.releaseNumber}/3)`, state.progress, progressClass, state.fragments.fragment2)}
     </div>
   `;
 }
@@ -286,6 +290,21 @@ function renderStat(label, value, className) {
       <div class="stat-bar-bg">
         <div class="stat-bar-fill" style="width: ${value}%"></div>
         <span class="stat-value">${value}%</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderProgressStat(label, value, className, fragmentFound) {
+  const lowClass = value <= THRESHOLDS.LOW_STAT_WARNING ? 'stat-low' : '';
+  const mysteryHint = !fragmentFound ? '<span class="mystery-hint">?</span>' : '';
+  return `
+    <div class="stat ${className} ${lowClass}">
+      <span class="stat-label">${label}</span>
+      <div class="stat-bar-bg">
+        <div class="stat-bar-fill" style="width: ${value}%"></div>
+        <span class="stat-value">${value}%</span>
+        ${mysteryHint}
       </div>
     </div>
   `;
@@ -398,7 +417,7 @@ function bindSceneEvents(scene) {
   }
 }
 
-// Mystery layer: 77.7% progress bar click
+// Mystery layer: 73.12% progress bar click
 let mysteryLayerBound = false;
 
 function bindMysteryLayerEvents(state) {
@@ -412,9 +431,11 @@ function bindMysteryLayerEvents(state) {
   mysteryLayerBound = true;
   progressBar.style.cursor = 'pointer';
   progressBar.addEventListener('click', () => {
-    // Check if progress is around 77.7% (tolerance: 77.0% - 78.4%)
-    if (state.progress >= 77 && state.progress <= 78.4 && !state.fragments.fragment2) {
+    // Check if progress is around 73.12%
+    if (state.progress >= THRESHOLDS.FRAGMENT2_PROGRESS_MIN && state.progress <= THRESHOLDS.FRAGMENT2_PROGRESS_MAX && !state.fragments.fragment2) {
       state.fragments.fragment2 = true;
+      state.sanity = Math.min(state.sanity + 10, 100);
+      render(state, null);
       showFragment2Message();
     }
   });
@@ -449,19 +470,14 @@ function showFragment2Message() {
       background: rgba(0, 20, 30, 0.9);
     ">
       <h2 style="font-size: 20px; margin-bottom: 20px; color: #45e0e8;">
-        Fragment 2/3: FOCUS
+        FOCUS
       </h2>
-      <p style="font-size: 14px; line-height: 1.8; color: #ccc; margin-bottom: 20px;">
-        "Reality rewards attention.<br>
-        Patterns hide in plain sight.<br>
-        The distracted miss everything."
-      </p>
       <p style="font-size: 12px; color: #888; margin-bottom: 20px;">
-        You clicked at exactly the right moment.<br>
-        Most would scroll past without noticing.
+        You clicked at exactly right moment.<br>
       </p>
       <p style="font-size: 11px; color: #555;">
-        At victory, look for what doesn't belong.
+        Truth is in the code nobody reads.<br>
+        Engineers know to look at the source.
       </p>
       <button id="close-fragment2" style="
         margin-top: 20px;

@@ -34,6 +34,11 @@ class RandomEventManager {
   }
 
   checkForEvent(state) {
+    // Nie pokazuj random eventów na samym początku gry
+    if (state.progress < 5) {
+      return null;
+    }
+
     const now = Date.now();
 
     // Sprawdź global cooldown

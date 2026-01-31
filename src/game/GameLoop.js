@@ -12,21 +12,25 @@ import { TIMINGS, THRESHOLDS } from './constants.js';
 let state;
 
 // DEBUG: Temporary debug functions to test mystery layer
-window.debug777 = () => {
+window.debugFragment2 = () => {
   if (state && state.fragments) {
     state.fragments.fragment1 = true;
-    state.fragments.fragment2 = true;
-    console.log('Fragments 1 & 2 activated. Win the game to see the glitch!');
+    state.progress = 69;
+    render(state, currentScene);
+    console.log('Fragment 1 activated. Progress set to 69%. Wait for 71.5% to test fragment 2.');
   } else {
     console.log('Start a game first.');
   }
 };
 
-window.debugWin = () => {
-  if (state) {
+window.debugVictoryGlitch = () => {
+  if (state && state.fragments) {
+    state.fragments.fragment1 = true;
+    state.fragments.fragment2 = true;
     state.releaseNumber = 2;
-    state.progress = 99;
-    console.log('Almost there... progress will hit 100 soon.');
+    state.progress = 96;
+    render(state, currentScene);
+    console.log('Both fragments activated. Progress at 96%. Win the game to see the glitch!');
   } else {
     console.log('Start a game first.');
   }
@@ -43,6 +47,8 @@ window.ATLAS = () => {
     return;
   }
   state.fragments.fragment1 = true;
+  state.sanity = Math.min(state.sanity + 10, 100);
+  render(state, currentScene);
   console.log(`
 %c╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
@@ -50,13 +56,13 @@ window.ATLAS = () => {
 ║                                                            ║
 ║   You found the first key.                                 ║
 ║                                                            ║
-║   Fragment 1/3: PATTERNS                                   ║
+║   PATTERNS                                                 ║
 ║                                                            ║
 ║   "Patterns exist in chaos.                                ║
 ║    Most people are too distracted to see them.             ║
 ║    You noticed. That's all it takes."                      ║
 ║                                                            ║
-║   → maintainers-collective.org/docs                        ║
+║   → observer-notes.net/fragment-1                          ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
 `, 'color: #00adb5; font-family: monospace;');
@@ -64,8 +70,14 @@ window.ATLAS = () => {
 
 let currentScene = null;
 let phase = Phase.TITLE;
-let dialogueIndex = 0;
+let usedDialogues = [[], [], [], [], []]; // Per chunk
 let usedEvents = {};
+let triggeredMilestones = [];
+
+// Milestone events - guaranteed to appear at specific progress points
+const MILESTONE_EVENTS = [
+  { progressRange: [48, 55], characterType: 'backend', eventId: 'be6' },
+];
 
 function initUsedEvents() {
   usedEvents = {};
@@ -91,8 +103,9 @@ export function startGame() {
   state = createGameState();
   currentScene = null;
   phase = Phase.IDLE;
-  dialogueIndex = 0;
+  usedDialogues = [[], [], [], [], []];
   initUsedEvents();
+  triggeredMilestones = [];
   randomEventManager.reset();
   renderScene(null);
   startProgressTimer();
@@ -156,8 +169,7 @@ function nextTurn() {
   if (phase !== Phase.IDLE) return;
 
   phase = Phase.THOUGHT;
-  const dialogue = INTERNAL_DIALOGUES[dialogueIndex % INTERNAL_DIALOGUES.length];
-  dialogueIndex++;
+  const dialogue = pickDialogue(state.progress);
   renderScene({ type: 'dialogue', text: dialogue });
 
   Timer.delay(() => {
@@ -173,19 +185,48 @@ function nextTurn() {
   }, TIMINGS.DIALOGUE_DURATION);
 }
 
+function checkMilestoneEvent(progress) {
+  for (const milestone of MILESTONE_EVENTS) {
+    // Skip if already triggered as milestone
+    if (triggeredMilestones.includes(milestone.eventId)) continue;
+    // Skip if already shown via random events
+    if (usedEvents[milestone.characterType]?.includes(milestone.eventId)) continue;
+
+    if (progress >= milestone.progressRange[0] && progress <= milestone.progressRange[1]) {
+      triggeredMilestones.push(milestone.eventId);
+      return milestone;
+    }
+  }
+  return null;
+}
+
 function spawnEmployee(thoughtText) {
-  const characterType = CHARACTER_TYPES[Math.floor(Math.random() * CHARACTER_TYPES.length)];
+  const milestone = checkMilestoneEvent(state.progress);
+
+  let characterType;
+  let event;
+
+  if (milestone) {
+    // Forced milestone event
+    characterType = milestone.characterType;
+    event = EMPLOYEE_EVENTS[characterType].find((e) => e.id === milestone.eventId);
+    usedEvents[characterType].push(milestone.eventId);
+  } else {
+    // Random event
+    characterType = CHARACTER_TYPES[Math.floor(Math.random() * CHARACTER_TYPES.length)];
+    event = pickRandomEvent(characterType);
+
+    if (!event) {
+      usedEvents[characterType] = [];
+      event = pickRandomEvent(characterType);
+    }
+  }
+
   const characterBase = CHARACTERS[characterType];
   const character = {
     ...characterBase,
     image: characterBase.images[Math.floor(Math.random() * characterBase.images.length)],
   };
-  let event = pickRandomEvent(characterType);
-
-  if (!event) {
-    usedEvents[characterType] = [];
-    event = pickRandomEvent(characterType);
-  }
 
   const enterDirection = Math.random() < 0.5 ? 'left' : 'right';
   phase = Phase.EMPLOYEE_ENTER;
@@ -276,4 +317,22 @@ function pickRandomEvent(characterType) {
   const picked = available[Math.floor(Math.random() * available.length)];
   used.push(picked.id);
   return picked;
+}
+
+function pickDialogue(progress) {
+  const chunkIndex = Math.min(Math.floor(progress / 20), 4);
+  const chunk = INTERNAL_DIALOGUES[chunkIndex];
+  const used = usedDialogues[chunkIndex];
+
+  // Reset if all dialogues in chunk used
+  if (used.length >= chunk.length) {
+    usedDialogues[chunkIndex] = [];
+  }
+
+  const available = chunk.filter((_, i) => !usedDialogues[chunkIndex].includes(i));
+  const pickedIndex = Math.floor(Math.random() * available.length);
+  const originalIndex = chunk.indexOf(available[pickedIndex]);
+
+  usedDialogues[chunkIndex].push(originalIndex);
+  return available[pickedIndex];
 }

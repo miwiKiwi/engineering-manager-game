@@ -10,7 +10,7 @@ export function createGameState() {
     // Mystery layer - fragment tracking
     fragments: {
       fragment1: false, // ATLAS command in console
-      fragment2: false, // 77.7% progress bar click
+      fragment2: false, // 73.12% progress bar click
       fragment3: false, // Passphrase on victory screen
     },
   };

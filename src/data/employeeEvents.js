@@ -162,7 +162,7 @@ export const EMPLOYEE_EVENTS = {
     {
       id: 'do6',
       glitch: true,
-      text: '"Logi pokazują dziwne requesty. Ktoś odpytuje endpoint /api/observer co 77.7 sekundy. Ale ten endpoint nie istnieje..."',
+      text: '"Logi pokazują dziwne requesty. Ktoś odpytuje endpoint /api/observer co 73.12 sekundy. Ale ten endpoint nie istnieje..."',
       options: [
         { text: 'Blokujemy IP', effects: { sanity: -3, morale: 0, codeQuality: 5 } },
         { text: 'Interesujące... zbadajmy to', effects: { sanity: 5, morale: 5, codeQuality: 0 } },

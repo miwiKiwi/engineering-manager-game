@@ -12,6 +12,8 @@ export const THRESHOLDS = {
   MORALE_FOR_PROGRESS: 30,      // progress stops below this
   LOW_STAT_WARNING: 30,         // stat bar pulses below this
   ONCALL_CODE_QUALITY: 40,      // oncall events trigger below this
+  FRAGMENT2_PROGRESS_MIN: 71.5, // mystery layer: clickable range start
+  FRAGMENT2_PROGRESS_MAX: 74.5, // mystery layer: clickable range end
 };
 
 export const RELEASE_CONFIG = {
