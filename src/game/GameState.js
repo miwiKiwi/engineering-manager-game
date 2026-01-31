@@ -1,12 +1,9 @@
 import { clamp } from './utils.js';
+import { INITIAL_STATS } from './constants.js';
 
 export function createGameState() {
   return {
-    sanity: 100,
-    morale: 100,
-    codeQuality: 80,
-    progress: 0,
-    releaseNumber: 0,
+    ...INITIAL_STATS,
     gameOver: false,
     victory: false,
     gameOverReason: '',

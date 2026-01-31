@@ -7,11 +7,7 @@ import * as Timer from './Timer.js';
 import { Phase } from './phases.js';
 import { checkAndApplyRelease } from './Release.js';
 import { randomEventManager } from './RandomEventManager.js';
-
-const PROGRESS_INTERVAL = 1500;
-const DIALOGUE_DURATION = 4000;
-const PAUSE_BETWEEN_TURNS = 500;
-const CHARACTER_ANIM_DURATION = 500;
+import { TIMINGS, THRESHOLDS } from './constants.js';
 
 let state;
 let currentScene = null;
@@ -62,7 +58,7 @@ function startProgressTimer() {
     if (phase === Phase.EMPLOYEE_ENTER || phase === Phase.EMPLOYEE_DIALOG) return;
     if (phase === Phase.RANDOM_EVENT) return;
 
-    if (state.morale > 30) {
+    if (state.morale > THRESHOLDS.MORALE_FOR_PROGRESS) {
       state.progress = Math.min(state.progress + 1, 100);
       render(state, currentScene);
 
@@ -70,7 +66,7 @@ function startProgressTimer() {
         handleRelease();
       }
     }
-  }, PROGRESS_INTERVAL);
+  }, TIMINGS.PROGRESS_INTERVAL);
 }
 
 function handleRelease() {
@@ -86,7 +82,7 @@ function handleRelease() {
     if (phase !== Phase.RELEASING) return;
     phase = Phase.IDLE;
     renderScene(null);
-    Timer.delay(() => nextTurn(), PAUSE_BETWEEN_TURNS);
+    Timer.delay(() => nextTurn(), TIMINGS.PAUSE_BETWEEN_TURNS);
   });
 }
 
@@ -107,7 +103,7 @@ function nextTurn() {
     } else {
       spawnEmployee(dialogue);
     }
-  }, DIALOGUE_DURATION);
+  }, TIMINGS.DIALOGUE_DURATION);
 }
 
 function spawnEmployee(thoughtText) {
@@ -147,7 +143,7 @@ function spawnEmployee(thoughtText) {
       enterDirection,
       onChoice: (optionIndex) => handleChoice(character, event, optionIndex),
     });
-  }, CHARACTER_ANIM_DURATION);
+  }, TIMINGS.CHARACTER_ANIM_DURATION);
 }
 
 function handleChoice(character, event, optionIndex) {
@@ -174,8 +170,8 @@ function handleChoice(character, event, optionIndex) {
 
     phase = Phase.IDLE;
     renderScene(null);
-    Timer.delay(() => nextTurn(), PAUSE_BETWEEN_TURNS);
-  }, CHARACTER_ANIM_DURATION);
+    Timer.delay(() => nextTurn(), TIMINGS.PAUSE_BETWEEN_TURNS);
+  }, TIMINGS.CHARACTER_ANIM_DURATION);
 }
 
 function showRandomEvent(event) {
@@ -200,7 +196,7 @@ function handleRandomChoice(event, optionIndex) {
 
   phase = Phase.IDLE;
   renderScene(null);
-  Timer.delay(() => nextTurn(), PAUSE_BETWEEN_TURNS);
+  Timer.delay(() => nextTurn(), TIMINGS.PAUSE_BETWEEN_TURNS);
 }
 
 function pickRandom(pool, usedPool) {

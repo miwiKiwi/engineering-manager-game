@@ -1,25 +1,20 @@
 import { RANDOM_EVENTS, EVENT_CATEGORIES } from '../data/randomEvents.js';
+import { RANDOM_EVENT_CONFIG, THRESHOLDS } from './constants.js';
 
-// Konfiguracja kategorii eventów
 const CATEGORY_CONFIG = {
   chaos: {
-    probability: 0.25,    // 25% szansy
-    interval: 30000,      // co 30 sekund
-    condition: () => true, // zawsze dostępne
+    ...RANDOM_EVENT_CONFIG.CATEGORIES.chaos,
+    condition: () => true,
   },
   oncall: {
-    probability: 0.35,    // 35% szansy
-    interval: 20000,      // co 20 sekund
-    condition: (state) => state.codeQuality < 40, // tylko przy niskiej jakości kodu
+    ...RANDOM_EVENT_CONFIG.CATEGORIES.oncall,
+    condition: (state) => state.codeQuality < THRESHOLDS.ONCALL_CODE_QUALITY,
   },
   absurd: {
-    probability: 0.08,    // 8% szansy
-    interval: 60000,      // co 60 sekund
+    ...RANDOM_EVENT_CONFIG.CATEGORIES.absurd,
     condition: () => true,
   },
 };
-
-const GLOBAL_COOLDOWN = 10000; // 10 sekund między jakimikolwiek random eventami
 
 class RandomEventManager {
   constructor() {
@@ -42,7 +37,7 @@ class RandomEventManager {
     const now = Date.now();
 
     // Sprawdź global cooldown
-    if (now - this.lastGlobalEvent < GLOBAL_COOLDOWN) {
+    if (now - this.lastGlobalEvent < RANDOM_EVENT_CONFIG.GLOBAL_COOLDOWN) {
       return null;
     }
 

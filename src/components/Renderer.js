@@ -1,4 +1,6 @@
 import { DEPLOY_ANIMATION_DURATION, RELEASE_TOTAL_DURATION } from '../game/Release.js';
+import * as Timer from '../game/Timer.js';
+import { THRESHOLDS } from '../game/constants.js';
 
 const app = document.getElementById('app');
 
@@ -27,7 +29,7 @@ export function renderRelease(state, onDismiss) {
     </div>
   `;
 
-  setTimeout(() => {
+  Timer.delay(() => {
     const status = document.querySelector('.deploy-status');
     const title = document.querySelector('.release-notification h2');
     if (status) status.textContent = 'Deploy successful!';
@@ -36,7 +38,7 @@ export function renderRelease(state, onDismiss) {
     if (notification) notification.classList.add('deploy-success');
   }, DEPLOY_ANIMATION_DURATION);
 
-  setTimeout(() => {
+  Timer.delay(() => {
     onDismiss();
   }, RELEASE_TOTAL_DURATION);
 }
@@ -118,7 +120,7 @@ function renderStatsBar(state) {
 }
 
 function renderStat(label, value, className) {
-  const lowClass = value <= 30 ? 'stat-low' : '';
+  const lowClass = value <= THRESHOLDS.LOW_STAT_WARNING ? 'stat-low' : '';
   return `
     <div class="stat ${className} ${lowClass}">
       <span class="stat-label">${label}</span>
