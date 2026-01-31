@@ -46,7 +46,7 @@ export function renderTitleScreen(onStart) {
     <div class="title-screen">
       <div class="title-background"></div>
       <div class="title-content">
-        <h1 class="game-title">Engineering Manager Simulator</h1>
+        <h1 class="game-title">The Manager's Paradox</h1>
         <p class="game-subtitle">Dowieź projekt do produkcji. Nie zwariuj.</p>
         <button class="start-btn" id="start-btn">Start</button>
       </div>
@@ -152,6 +152,30 @@ function renderGameScene(scene) {
     `;
   }
 
+  if (scene.type === 'randomEvent') {
+    const optionsHtml = scene.onChoice ? `
+      <div class="dialog-options">
+        ${scene.event.options.map((opt, i) => `
+          <button class="option-btn" data-index="${i}">${opt.text}</button>
+        `).join('')}
+      </div>
+    ` : '';
+
+    return `
+      <div class="game-scene">
+        <div class="scene-background">
+          <div class="dialog-box random-event random-event-${scene.event.category}">
+            <p class="dialog-text">
+              <span class="event-title">${scene.event.title}</span>
+              ${scene.event.text}
+            </p>
+            ${optionsHtml}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   if (scene.type === 'employee') {
     const animClass = scene.animating === 'enter' ? `character-enter-${scene.enterDirection || 'left'}` :
                       scene.animating === 'exit' ? 'character-exit' : 'character-idle';
@@ -196,7 +220,13 @@ function renderGameScene(scene) {
 }
 
 function bindSceneEvents(scene) {
-  if (scene && scene.type === 'employee' && !scene.animating && scene.onChoice) {
+  if (!scene || !scene.onChoice) return;
+
+  // Handle both employee (not animating) and randomEvent scenes
+  const isEmployeeReady = scene.type === 'employee' && !scene.animating;
+  const isRandomEvent = scene.type === 'randomEvent';
+
+  if (isEmployeeReady || isRandomEvent) {
     const buttons = document.querySelectorAll('.option-btn');
     buttons.forEach((btn) => {
       btn.addEventListener('click', () => {

@@ -6,6 +6,7 @@ import { render, renderRelease, renderGameOver, renderVictory, renderTitleScreen
 import * as Timer from './Timer.js';
 import { Phase } from './phases.js';
 import { checkAndApplyRelease } from './Release.js';
+import { randomEventManager } from './RandomEventManager.js';
 
 const PROGRESS_INTERVAL = 1500;
 const DIALOGUE_DURATION = 4000;
@@ -43,6 +44,7 @@ export function startGame() {
   phase = Phase.IDLE;
   usedDialogues = [];
   initUsedEvents();
+  randomEventManager.reset();
   renderScene(null);
   startProgressTimer();
   nextTurn();
@@ -58,6 +60,7 @@ function startProgressTimer() {
     if (phase === Phase.GAME_OVER || phase === Phase.VICTORY) return;
     if (phase === Phase.RELEASING) return;
     if (phase === Phase.EMPLOYEE_ENTER || phase === Phase.EMPLOYEE_DIALOG) return;
+    if (phase === Phase.RANDOM_EVENT) return;
 
     if (state.morale > 30) {
       state.progress = Math.min(state.progress + 1, 100);
@@ -96,7 +99,14 @@ function nextTurn() {
 
   Timer.delay(() => {
     if (phase !== Phase.THOUGHT) return;
-    spawnEmployee(dialogue);
+
+    // Check for random event after thought
+    const randomEvent = randomEventManager.checkForEvent(state);
+    if (randomEvent) {
+      showRandomEvent(randomEvent);
+    } else {
+      spawnEmployee(dialogue);
+    }
   }, DIALOGUE_DURATION);
 }
 
@@ -166,6 +176,31 @@ function handleChoice(character, event, optionIndex) {
     renderScene(null);
     Timer.delay(() => nextTurn(), PAUSE_BETWEEN_TURNS);
   }, CHARACTER_ANIM_DURATION);
+}
+
+function showRandomEvent(event) {
+  phase = Phase.RANDOM_EVENT;
+
+  renderScene({
+    type: 'randomEvent',
+    event,
+    onChoice: (optionIndex) => handleRandomChoice(event, optionIndex),
+  });
+}
+
+function handleRandomChoice(event, optionIndex) {
+  const option = event.options[optionIndex];
+  applyEffects(state, option.effects);
+
+  if (state.gameOver) {
+    phase = Phase.GAME_OVER;
+    renderGameOver(state, startGame);
+    return;
+  }
+
+  phase = Phase.IDLE;
+  renderScene(null);
+  Timer.delay(() => nextTurn(), PAUSE_BETWEEN_TURNS);
 }
 
 function pickRandom(pool, usedPool) {
