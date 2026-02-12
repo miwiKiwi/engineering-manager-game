@@ -435,7 +435,6 @@ function bindMysteryLayerEvents(state) {
     if (state.progress >= THRESHOLDS.FRAGMENT2_PROGRESS_MIN && state.progress <= THRESHOLDS.FRAGMENT2_PROGRESS_MAX && !state.fragments.fragment2) {
       state.fragments.fragment2 = true;
       state.sanity = Math.min(state.sanity + 10, 100);
-      render(state, null);
       showFragment2Message();
     }
   });

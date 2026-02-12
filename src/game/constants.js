@@ -3,7 +3,7 @@
 export const INITIAL_STATS = {
   sanity: 100,
   morale: 100,
-  codeQuality: 80,
+  codeQuality: 65,
   progress: 0,
   releaseNumber: 0,
 };
@@ -11,7 +11,7 @@ export const INITIAL_STATS = {
 export const THRESHOLDS = {
   MORALE_FOR_PROGRESS: 30,      // progress stops below this
   LOW_STAT_WARNING: 30,         // stat bar pulses below this
-  ONCALL_CODE_QUALITY: 40,      // oncall events trigger below this
+  ONCALL_CODE_QUALITY: 50,      // oncall events trigger below this
   FRAGMENT2_PROGRESS_MIN: 71.5, // mystery layer: clickable range start
   FRAGMENT2_PROGRESS_MAX: 74.5, // mystery layer: clickable range end
 };
@@ -19,8 +19,8 @@ export const THRESHOLDS = {
 export const RELEASE_CONFIG = {
   MILESTONES: [33, 66, 100],
   RELEASES_TO_WIN: 3,
-  SANITY_BOOST: 25,
-  CODE_QUALITY_PENALTY: 15,
+  SANITY_BOOST: 30,
+  CODE_QUALITY_PENALTY: 20,
 };
 
 export const TIMINGS = {

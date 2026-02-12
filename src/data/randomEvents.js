@@ -20,7 +20,7 @@ export const RANDOM_EVENTS = {
       title: 'BILLING ALERT',
       text: 'Rachunek za AWS: $47,000. Ktoś zostawił 50 EC2 instancji po testach.',
       options: [
-        { text: 'Płacimy i dodajemy cost monitoring.', effects: { sanity: -15, morale: -5, codeQuality: 10 } },
+        { text: 'Płacimy i dodajemy cost monitoring.', effects: { sanity: -15, morale: -5, codeQuality: 5 } },
         { text: 'Negocjujemy z AWS support.', effects: { sanity: -25, morale: -10, codeQuality: 0 } },
         { text: 'Szukamy winnego, nie może tak być.', effects: { sanity: -10, morale: -30, codeQuality: 0 } },
       ],
@@ -64,7 +64,7 @@ export const RANDOM_EVENTS = {
       title: 'SECURITY AUDIT',
       text: 'External security audit: 47 critical vulnerabilities. Newsletter poszedł do całej firmy. Board pyta.',
       options: [
-        { text: 'Weekend crunch - fix dla wszystkich krytycznych', effects: { sanity: -40, morale: -40, codeQuality: 30 } },
+        { text: 'Weekend crunch - fix dla wszystkich krytycznych', effects: { sanity: -40, morale: -40, codeQuality: 15 } },
         { text: 'Priorytetyzujemy top 10', effects: { sanity: -20, morale: -15, codeQuality: 15 } },
         { text: 'Większość to false positives...', effects: { sanity: 5, morale: 5, codeQuality: -10 } },
       ],
@@ -78,7 +78,7 @@ export const RANDOM_EVENTS = {
       title: 'PAGERDUTY ALERT',
       text: 'Alert o 3:24 AM. Production database 99% full. ETA to disaster: 30 minut.',
       options: [
-        { text: 'Rozwiązuję z Alexem, zespół śpi.', effects: { sanity: -40, morale: 5, codeQuality: 0 } },
+        { text: 'Rozwiązuję z Alexem, zespół śpi.', effects: { sanity: -25, morale: 5, codeQuality: 0 } },
         { text: 'Budzę zespół, wszyscy na pokład.', effects: { sanity: -20, morale: -30, codeQuality: 5 } },
         { text: 'Ignorujemy do rana...', effects: { sanity: -10, morale: -20, codeQuality: -25 } },
       ],
@@ -91,7 +91,7 @@ export const RANDOM_EVENTS = {
       options: [
         { text: 'Kill switch - disable feature.', effects: { sanity: -15, morale: -20, codeQuality: 0 } },
         { text: 'Rollback do poprzedniej wersji.', effects: { sanity: -10, morale: -10, codeQuality: 0 } },
-        { text: 'Debug na żywo w produkcji.', effects: { sanity: -35, morale: -15, codeQuality: 10 } },
+        { text: 'Debug na żywo w produkcji.', effects: { sanity: -25, morale: -15, codeQuality: 10 } },
       ],
     },
     {
@@ -100,8 +100,8 @@ export const RANDOM_EVENTS = {
       title: 'SECURITY BREACH',
       text: 'Ktoś wrzucił API key do publicznego repo. 20 minut temu. To był AI. Boty już próbują się włamać.',
       options: [
-        { text: 'PANIC MODE - regeneruj wszystko.', effects: { sanity: -30, morale: -25, codeQuality: 15 } },
-        { text: 'Rotate keys zgodnie z procedurą.', effects: { sanity: -15, morale: -10, codeQuality: 10 } },
+        { text: 'PANIC MODE - regeneruj wszystko.', effects: { sanity: -20, morale: -25, codeQuality: 15 } },
+        { text: 'Rotate keys zgodnie z procedurą.', effects: { sanity: -15, morale: -10, codeQuality: 5 } },
         { text: 'Blokujemy IP.', effects: { sanity: -10, morale: -5, codeQuality: -5 } },
       ],
     },
@@ -112,7 +112,7 @@ export const RANDOM_EVENTS = {
       text: 'Memory usage: 8GB → 16GB → 24GB. Serwery crashują jeden po drugim.',
       options: [
         { text: 'Restart all, repeat co godzinę', effects: { sanity: -25, morale: -15, codeQuality: -10 } },
-        { text: 'Profile na produkcji', effects: { sanity: -35, morale: -20, codeQuality: 20 } },
+        { text: 'Profile na produkcji', effects: { sanity: -25, morale: -20, codeQuality: 10 } },
         { text: 'Scale horizontal - więcej serwerów', effects: { sanity: -15, morale: -10, codeQuality: -5 } },
       ],
     },
