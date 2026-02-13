@@ -7,7 +7,12 @@ const CATEGORY_CONFIG = {
     condition: () => true,
   },
   oncall: {
-    ...RANDOM_EVENT_CONFIG.CATEGORIES.oncall,
+    interval: RANDOM_EVENT_CONFIG.CATEGORIES.oncall.interval,
+    probability: (state) => {
+      const { probabilityMin, probabilityMax } = RANDOM_EVENT_CONFIG.CATEGORIES.oncall;
+      const ratio = (THRESHOLDS.ONCALL_CODE_QUALITY - state.codeQuality) / THRESHOLDS.ONCALL_CODE_QUALITY;
+      return probabilityMin + (probabilityMax - probabilityMin) * ratio;
+    },
     condition: (state) => state.codeQuality < THRESHOLDS.ONCALL_CODE_QUALITY,
   },
   absurd: {
@@ -61,7 +66,8 @@ class RandomEventManager {
       }
 
       // Losuj czy event się pojawi
-      if (Math.random() < config.probability) {
+      const prob = typeof config.probability === 'function' ? config.probability(state) : config.probability;
+      if (Math.random() < prob) {
         const event = this.getRandomEvent(category);
         if (event) {
           this.lastEventTime[category] = now;

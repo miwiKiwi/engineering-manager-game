@@ -40,12 +40,13 @@ export const RANDOM_EVENT_CONFIG = {
       interval: 30000,
     },
     oncall: {
-      probability: 0.35,
+      probabilityMin: 0.15,
+      probabilityMax: 0.50,
       interval: 20000,
     },
     absurd: {
-      probability: 0.08,
-      interval: 60000,
+      probability: 0.15,
+      interval: 40000,
     },
   },
 };
