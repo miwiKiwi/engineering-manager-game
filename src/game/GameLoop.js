@@ -62,6 +62,8 @@ window.ATLAS = () => {
 ║    Most people are too distracted to see them.             ║
 ║    You noticed. That's all it takes."                      ║
 ║                                                            ║
+║                                                            ║
+║    You've earned it:                                       ║
 ║   → observer-notes.net/fragment-1                          ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝

@@ -24,6 +24,7 @@
             overflow-x: hidden;
         }
 
+        /* Static scanlines */
         body::after {
             content: '';
             position: fixed;
@@ -39,14 +40,41 @@
             z-index: 100;
         }
 
+
+
         .container {
             max-width: 800px;
             width: 100%;
-            animation: fadeIn 2s ease-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        /* Staggered fade-in */
+        .container > * {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: staggerIn 0.8s ease-out forwards;
+        }
+
+        .container > *:nth-child(1)  { animation-delay: 0.1s; }
+        .container > *:nth-child(2)  { animation-delay: 0.25s; }
+        .container > *:nth-child(3)  { animation-delay: 0.4s; }
+        .container > *:nth-child(4)  { animation-delay: 0.55s; }
+        .container > *:nth-child(5)  { animation-delay: 0.7s; }
+        .container > *:nth-child(6)  { animation-delay: 0.85s; }
+        .container > *:nth-child(7)  { animation-delay: 1.0s; }
+        .container > *:nth-child(8)  { animation-delay: 1.15s; }
+        .container > *:nth-child(9)  { animation-delay: 1.3s; }
+        .container > *:nth-child(10) { animation-delay: 1.45s; }
+        .container > *:nth-child(11) { animation-delay: 1.6s; }
+        .container > *:nth-child(12) { animation-delay: 1.75s; }
+        .container > *:nth-child(13) { animation-delay: 1.9s; }
+        .container > *:nth-child(14) { animation-delay: 2.05s; }
+        .container > *:nth-child(15) { animation-delay: 2.2s; }
+        .container > *:nth-child(16) { animation-delay: 2.35s; }
+        .container > *:nth-child(17) { animation-delay: 2.5s; }
+        .container > *:nth-child(18) { animation-delay: 2.65s; }
+
+        @keyframes staggerIn {
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -62,6 +90,7 @@
             overflow: hidden;
             white-space: nowrap;
             width: 100%;
+            animation: staggerIn 0.8s ease-out forwards, glowBreathCyan 4s ease-in-out infinite;
         }
 
         .header {
@@ -83,7 +112,7 @@
                 0 0 20px #00f0ff,
                 0 0 40px rgba(0, 240, 255, 0.3);
             margin-bottom: 15px;
-            animation: flicker 8s infinite;
+            animation: flicker 6s infinite;
         }
 
         .header-left .entry-number {
@@ -232,6 +261,7 @@
                 0 0 15px rgba(181, 55, 242, 0.15),
                 inset 0 0 20px rgba(181, 55, 242, 0.03);
             text-align: center;
+            animation: staggerIn 0.8s ease-out forwards, glowBreathPurple 4s ease-in-out infinite;
         }
 
         .welcome-box .welcome-title {
@@ -298,6 +328,14 @@
             text-align: center;
         }
 
+        .note {
+            color: #808080;
+            font-size: 12px;
+            font-style: italic;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
         .footer .counter {
             color: #ffea00;
             text-shadow: 0 0 5px rgba(255, 234, 0, 0.3);
@@ -308,6 +346,36 @@
             96% { opacity: 0.8; }
             97% { opacity: 1; }
             98% { opacity: 0.9; }
+        }
+
+        /* Glow breathing */
+        @keyframes glowBreathCyan {
+            0%, 100% {
+                text-shadow:
+                    0 0 10px #00f0ff,
+                    0 0 20px #00f0ff,
+                    0 0 40px rgba(0, 240, 255, 0.3);
+            }
+            50% {
+                text-shadow:
+                    0 0 15px #00f0ff,
+                    0 0 30px #00f0ff,
+                    0 0 60px rgba(0, 240, 255, 0.5);
+            }
+        }
+
+        @keyframes glowBreathPurple {
+            0%, 100% {
+                box-shadow:
+                    0 0 15px rgba(181, 55, 242, 0.15),
+                    inset 0 0 20px rgba(181, 55, 242, 0.03);
+            }
+            50% {
+                box-shadow:
+                    0 0 25px rgba(181, 55, 242, 0.3),
+                    0 0 40px rgba(181, 55, 242, 0.1),
+                    inset 0 0 30px rgba(181, 55, 242, 0.05);
+            }
         }
     </style>
 </head>
@@ -325,6 +393,14 @@
                 <span class="label">Status: </span><span class="value-yellow">All fragments collected</span><br>
                 <span class="label">Classification: </span><span class="value-purple">COMPLETE</span>
             </div>
+        </div>
+
+        <div class="separator">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</div>
+
+        <div class="note">
+            This game was a gift from a friend. A good friend, it seems &mdash; she chose well.<br>
+            We simply... embedded a small awareness test inside it. Path hidden in the code, in the UI, in the timing.<br>
+            <span class="highlight">You noticed.</span> That's how you found us.
         </div>
 
         <div class="separator">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</div>
@@ -379,7 +455,7 @@
 
         <div class="footer">
             Active Observers: <span class="counter">49</span><br>
-            One more than yesterday.
+            One more than yesterday. Welcome.
         </div>
 
         <div class="border-bottom">════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════</div>
