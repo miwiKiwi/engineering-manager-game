@@ -244,7 +244,7 @@ function showFinalReveal() {
       <p style="font-size: 18px; color: #00adb5; margin-bottom: 30px;">
         Congratulations
       </p>
-      <a href="https://maintainers-collective.org/welcome" target="_blank"
+      <a href="https://observer-notes.net/welcome" target="_blank"
          style="color: #45e0e8; text-decoration: underline; font-size: 12px;">
         → Welcome
       </a>

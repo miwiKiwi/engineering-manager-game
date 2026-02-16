@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | Observer Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.08) 2px,
+                rgba(0, 0, 0, 0.08) 4px
+            );
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .border {
+            color: #00f0ff;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-shadow:
+                0 0 10px #00f0ff,
+                0 0 20px #00f0ff,
+                0 0 40px rgba(0, 240, 255, 0.3);
+            user-select: none;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        .error-code {
+            font-family: 'Orbitron', 'Courier New', monospace;
+            font-size: 72px;
+            color: #ff006e;
+            text-shadow:
+                0 0 10px #ff006e,
+                0 0 20px #ff006e,
+                0 0 40px rgba(255, 0, 110, 0.4),
+                0 0 80px rgba(255, 0, 110, 0.2);
+            margin: 40px 0 20px;
+            animation: glitch 5s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 94%, 100% { transform: translate(0); }
+            95% { transform: translate(-2px, 1px); }
+            96% { transform: translate(2px, -1px); }
+            97% { transform: translate(-1px, -1px); }
+            98% { transform: translate(1px, 1px); }
+        }
+
+        .message {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #e0e0e0;
+        }
+
+        .submessage {
+            font-size: 16px;
+            color: #808080;
+            margin: 5px 0;
+        }
+
+        .separator {
+            color: #00f0ff;
+            opacity: 0.4;
+            margin: 30px 0;
+            letter-spacing: 2px;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        .motto {
+            color: #b537f2;
+            font-size: 18px;
+            font-style: italic;
+            text-shadow: 0 0 10px rgba(181, 55, 242, 0.5);
+            margin: 30px 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #00f0ff;
+            text-decoration: none;
+            font-size: 14px;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+            transition: text-shadow 0.3s;
+        }
+
+        .back-link:hover {
+            text-shadow:
+                0 0 10px #00f0ff,
+                0 0 20px rgba(0, 240, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="border">════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════</div>
+
+        <div class="error-code">404</div>
+
+        <div class="message">Page not found.</div>
+        <div class="submessage">Or maybe it's hidden.</div>
+
+        <div class="separator">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</div>
+
+        <div class="motto">"It's not a bug. It's a feature."</div>
+
+        <div class="separator">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</div>
+
+        <a href="/" class="back-link">&larr; Back to reality</a>
+
+        <div style="margin-top: 40px;">
+            <div class="border">════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════</div>
+        </div>
+    </div>
+</body>
+</html>
