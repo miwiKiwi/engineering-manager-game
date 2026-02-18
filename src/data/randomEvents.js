@@ -17,12 +17,12 @@ export const RANDOM_EVENTS = {
     {
       id: 'ch2',
       category: 'chaos',
-      title: 'BILLING ALERT',
-      text: 'Rachunek za AWS: $47,000. Ktoś zostawił 50 EC2 instancji po testach.',
+      title: 'NOWE BIURO',
+      text: 'HR-y z Dubaju znalazły nowe biuro, na Siedmiogrodzkiej. Jeśli nie znajdziesz innego w 30min. podpisują umowę na 2 lata.',
       options: [
-        { text: 'Płacimy i dodajemy cost monitoring.', effects: { sanity: -15, morale: -5, codeQuality: 5 } },
-        { text: 'Negocjujemy z AWS support.', effects: { sanity: -25, morale: -10, codeQuality: 0 } },
-        { text: 'Szukamy winnego, nie może tak być.', effects: { sanity: -10, morale: -30, codeQuality: 0 } },
+        { text: 'Czy ktoś ma namiar na biuro na wynjem w dobrym miejscu?', effects: { sanity: -15, morale: -5, codeQuality: 0 } },
+        { text: 'Rzucam wszystko i szyukam, mieliśmy przyciągać devów lokalizacją.', effects: { sanity: -20, morale: -5, codeQuality: 0 } },
+        { text: 'Dobra, w sumie lubię sobie czasem zrobić spacer z metra i popatrzeć na inne wieżowce.', effects: { sanity: -3, morale: -30, codeQuality: 0 } },
       ],
     },
     {
@@ -40,7 +40,7 @@ export const RANDOM_EVENTS = {
       id: 'ch4',
       category: 'chaos',
       title: 'BREAKING CHANGE',
-      text: 'Breaking API changen na produkcji od upstream. Żadnego deprecation notice. Połowa funkcji nie działa.',
+      text: 'Breaking API change na produkcji od upstream. Żadnego deprecation notice. Połowa funkcji nie działa.',
       options: [
         { text: 'Emergency hotfix po naszej stronie.', effects: { sanity: -25, morale: -15, codeQuality: -20 } },
         { text: 'Eskalacja do ich EM, niech robią rollback.', effects: { sanity: -15, morale: -10, codeQuality: 0 } },
@@ -75,7 +75,7 @@ export const RANDOM_EVENTS = {
     {
       id: 'on1',
       category: 'oncall',
-      title: 'PAGERDUTY ALERT',
+      title: 'ONCALL ALERT',
       text: 'Alert o 3:24 AM. Production database 99% full. ETA to disaster: 30 minut.',
       options: [
         { text: 'Rozwiązuję z Alexem, zespół śpi.', effects: { sanity: -25, morale: 5, codeQuality: 0 } },
@@ -87,11 +87,11 @@ export const RANDOM_EVENTS = {
       id: 'on2',
       category: 'oncall',
       title: 'EXCEPTION STORM',
-      text: '10,000 exceptions w ciągu minuty. Monitoring płonie. Slack nie nadąża z alertami.',
+      text: '10,000 wyjątków w ciągu minuty. Monitoring płonie. Slack nie nadąża z alertami.',
       options: [
         { text: 'Kill switch - disable feature.', effects: { sanity: -15, morale: -20, codeQuality: 0 } },
         { text: 'Rollback do poprzedniej wersji.', effects: { sanity: -10, morale: -10, codeQuality: 0 } },
-        { text: 'Debug na żywo w produkcji.', effects: { sanity: -25, morale: -15, codeQuality: 10 } },
+        { text: 'Debug na żywo w produkcji.', effects: { sanity: -25, morale: -15, codeQuality: 3 } },
       ],
     },
     {
@@ -111,8 +111,8 @@ export const RANDOM_EVENTS = {
       title: 'MEMORY LEAK',
       text: 'Memory usage: 8GB → 16GB → 24GB. Serwery crashują jeden po drugim.',
       options: [
-        { text: 'Restart all, repeat co godzinę', effects: { sanity: -25, morale: -15, codeQuality: -10 } },
-        { text: 'Profile na produkcji', effects: { sanity: -25, morale: -20, codeQuality: 10 } },
+        { text: 'Restart all, powtarzaj co godzinę', effects: { sanity: -25, morale: -15, codeQuality: -10 } },
+        { text: 'Profile na produkcji', effects: { sanity: -15, morale: -20, codeQuality: 10 } },
         { text: 'Scale horizontal - więcej serwerów', effects: { sanity: -15, morale: -10, codeQuality: -5 } },
       ],
     },
